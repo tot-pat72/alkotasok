@@ -4,6 +4,15 @@ const makeDiv = (className) => { //Arrow function létrehozása aminek a classNa
     div.className = className; //className adása a div elemnek
     return div; //Visszatérés a divvel
 }
+const filter = (dataArray, callback) => { //Arrow function létrehozása aminek a dataArray és a callback a bemeneti paramétere
+    const result = []; //üres tömb létrehozása, a szürt elemeknek
+    for(const element of dataArray){ //dataArray bejárása
+        if(callback(element)){ //ha a callback függvény truet ad vissza
+            result.push(element); //result hozzáadása a tömbhöz
+        }
+    }
+    return result; //visszatérés resulttal
+}
 const containerDiv = makeDiv("container"); //containerdiv létrehozása, aminek a container lesz a classa
 document.body.appendChild(containerDiv); //containerdiv hozzáadása a bodyhoz
 
@@ -163,4 +172,89 @@ exportButton.addEventListener('click', () => { //eseménykezelő létrehozása a
     link.download = 'newdata.csv' //letöltött fájl nevének megadása
     link.click(); //linkre kattintásnál elindul a letöltés
     URL.revokeObjectURL(link.href); //ideiglenes URL visszavonása
+})
+
+const filterFormDiv = makeDiv('filterForm') //filterFormDiv létrehozása, aminek a filterForm lesz a classa
+containerDiv.appendChild(filterFormDiv); //filterFormDiv hozzáadása a containerDivhez
+ 
+const formForFilter = document.createElement('form'); //form létrehozása
+filterFormDiv.appendChild(formForFilter); //formForFilter hozzáadása a filterFormDivhez
+ 
+const select = document.createElement('select'); //legördülő lista létrehozása
+formForFilter.appendChild(select); //select hozzáadása a formForFilterhez
+ 
+const options = [{ //tömb létrehozása, benne objektummal
+    value: '', //lista 1.értéke
+    innerText: '' //üres szöveg
+},
+{
+    value: 'szerzo', //lista 2.értéke
+    innerText: 'szerző' //szövege: szerző
+},
+{
+    value: 'mufaj', //lista 3.értéke
+    innerText: 'műfaj' //szövege: műfaj
+},
+{
+    value: 'cim', //lista 4.értéke
+    innerText: 'cím' //szövege: cím
+}]
+ 
+
+for(const option of options){ //options tömb bejárása
+    const optionElement = document.createElement('option'); //optionElement létrehozása
+    optionElement.value = option.value; //érték beállítása
+    optionElement.innerText = option.innerText //megjelenő szöveg beállítása
+    select.appendChild(optionElement); //optionElement hozzáadása a selecthez
+}
+ 
+const filterInputField = document.createElement('input'); //input létrehozása
+filterInputField.id = 'filterInput'; //filterInputField idje filterInput lesz
+formForFilter.appendChild(filterInputField); //filterInputField hozzáadása a formForFilterhez
+ 
+const button = document.createElement('button'); //új gomb létrehozása
+button.innerText = 'Szűrés'; //gomb szövege a Szűrés lesz
+formForFilter.appendChild(button); //button hozzáadása a formForFilterhez
+ 
+formForFilter.addEventListener('submit', (e) => { //eseménykezelő létrehozása a formForFilter submit eseményére
+    e.preventDefault(); //az oldal újra frissülésének megakadályozása
+    const filterInput = e.target.querySelector('#filterInput'); //filterinput classal rendelkezö elem kiválasztása
+    const select = e.target.querySelector('select'); //select classal rendelkezö elem kiválasztása
+    const filteredArray = filter(array, (element) => { //filteredArray létrehozása a megadott mező és érték alapján
+        if(select.value == 'szerzo'){ //ha a kiválasztott mező a szerzo
+            if(filterInput.value === element.szerzo){ //ha a filterInput értéke egyenlő a szerzo értékével
+                return true; //visszatérés igazzal
+            }
+        }
+        else if(select.value == 'mufaj'){ //ha a kiválasztott mező az mufaj
+            if(filterInput.value === element.mufaj){ //ha a filterInput értéke egyenlő a mufaj értékével
+                return true; //visszatérés igazzal
+            }
+        }
+        else if(select.value == 'cim'){ //ha a kiválasztott mező a cim
+            if(filterInput.value === element.cim){ //ha a filterInput értéke egyenlő a cim értékével
+                return true; //visszatérés igazzal
+            }
+        }
+        else{
+            return true; //visszatérés igazzal
+        }
+    })
+    tbody.innerHTML = ''; //táblázat kiürítése
+    for(const filteredElement of filteredArray){ //filteredArray bejárása
+        const tableBodyRow = document.createElement('tr'); //új sor létrehozása
+            tbody.appendChild(tableBodyRow); //tableBodyRow hozzáadása a tbodyhoz
+ 
+            const szerzoCell = document.createElement('td'); //új cella létrehozása a szerzőnek
+            szerzoCell.textContent = filteredElement.szerzo; //cella tartalma a szerző értéke
+            tableBodyRow .appendChild(szerzoCell); //szerzoCell hozzáadása a tableBodyRowhoz
+        
+            const cimCell = document.createElement('td'); //új cella létrehozása a címnek
+            cimCell.textContent = filteredElement.cim; //cella tartalma a cím értéke
+            tableBodyRow .appendChild(cimCell); //cimCell hozzáadása a tableBodyRowhoz
+
+            const mufajCell = document.createElement('td'); //új cella létrehozása a műfajnak
+            mufajCell.textContent = filteredElement.mufaj; //cella tartalma a műfaj értéke
+            tableBodyRow .appendChild(mufajCell); //mufajCell hozzáadása a tableBodyRowhoz
+    }
 })
