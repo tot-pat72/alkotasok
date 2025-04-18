@@ -1,3 +1,4 @@
+const array = [];
 const makeDiv = (className) => { //Arrow function létrehozása aminek a className a bemeneti paramétere
     const div = document.createElement("div"); //div elem létrehozása
     div.className = className; //className adása a div elemnek
@@ -62,6 +63,31 @@ for(const fieldElement of fieldElementList){ //fieldElementList tömb bejárása
 const buttonFormSim = document.createElement('button'); //gomb létrehozása
 buttonFormSim.textContent = 'hozzáadás'; //gomb szövegének beállítása(hozzáadás)
 formSim.appendChild(buttonFormSim); //buttonFormSim hozzáadása a formSimhez
+
+formSim.addEventListener('submit', (e)=> { //form elküldésével fut le
+    e.preventDefault(); //az oldal újra frissülésének megakadályozása
+    const valueObject = {}; //üres objektum létrehozása, a mezők értékeinek az eltárolása
+    const inputFields = e.target.querySelectorAll('input'); //az összes input mező lekérése a formból
+    for(const inputField of inputFields){ //inputFields bejárása
+        valueObject[inputField.id] = inputField.value; //A mező idje lesz a kulcs az objektumban, az aktuális input mező értékének a hozzárendelése.
+    }
+    array.push(valueObject); //adatok hozzáadása a tömbhöz
+
+    const tableBodyRow = document.createElement('tr'); //új sor létrehozása
+    tbody.appendChild(tableBodyRow); //tableBodyRow hozzáadása a tbodyhoz
+ 
+    const szerzoCell = document.createElement('td'); //új cella létrehozása a szerzőnek
+    szerzoCell.textContent = valueObject.szerzo; //cella tartalma a szerző értéke
+    tableBodyRow .appendChild(szerzoCell); //szerzoCell hozzáadása a tableBodyRowhoz
+
+    const mufajCell = document.createElement('td'); //új cella létrehozása a műfajnak
+    mufajCell.textContent = valueObject.mufaj; //cella tartalma a műfaj értéke
+    tableBodyRow .appendChild(mufajCell); //mufajCell hozzáadása a tableBodyRowhoz
+ 
+    const cimCell = document.createElement('td'); //új cella létrehozása a címnek
+    cimCell.textContent = valueObject.cim; //cella tartalma a cím értéke
+    tableBodyRow .appendChild(cimCell); //cimCell hozzáadása a tableBodyRowhoz
+})
 
 containerDiv.appendChild(tableDiv); //tablediv hozzáadása a containerdivhez
 containerDiv.appendChild(formDiv); //formdiv hozzáadása a containerdivhez
