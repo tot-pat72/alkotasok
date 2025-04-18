@@ -114,12 +114,19 @@ class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazot
         form.addEventListener('submit', (e)=> { //form elküldésével fut le
             e.preventDefault(); //az oldal újra frissülésének megakadályozása
             const valueObject = {}; //üres objektum létrehozása, a mezők értékeinek az eltárolása
-            const inputFields = e.target.querySelectorAll('input'); //az összes input mezőt lekérése a formból
-            for(const inputField of inputFields){ //inputFields bejárása
+            let valid = true; //valid változó létrehozása, aminek az kezdő értéke igaz
+            for(const inputField of this.#formField){ //formField bejárása
+                inputField.error = ''; //hibaüzenet mező kiürítése
+                if(inputField.value === ''){ //ha az inputField üres
+                    inputField.error = 'Kötelező megadni!'; //hibaüzenetet kiírása
+                    valid = false; //valid értéke false lesz
+                }
                 valueObject[inputField.id] = inputField.value; //A mező idje lesz a kulcs az objektumban, az aktuális input mező értékének a hozzárendelése.
             }
-            const data = new Data(valueObject.szerzo, valueObject.mufaj, valueObject.cim) //új Data objektum létrehozása a felhasználó által megadott adatokkal
-            this.manager.addData(data) //új objektum hozzáadása a managerhez
+            if(valid){ //ha a valid értéke true
+                const data = new Data(valueObject.szerzo, valueObject.mufaj, valueObject.cim); //új Data objektum létrehozása a felhasználó által megadott adatokkal
+                this.manager.addData(data); //új objektum hozzáadása a managerhez
+            }
         })
     }
 }
