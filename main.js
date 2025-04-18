@@ -26,8 +26,6 @@ for(const cell of headcell){ //headcell tömb bejárása
 
 const tbody = document.createElement('tbody'); //tbody elem létrehozása és eltárolása egy változóba
 tableelement.appendChild(tbody); //tbody hozzáadása a tableelementhez
-
-containerDiv.appendChild(tableDiv); //tablediv hozzáadása a containerdivhez
  
 const formDiv = makeDiv("form"); //formdiv létrehozása, aminek a form lesz a classa
 const formSim = document.createElement('form'); //form létrehozása
@@ -65,4 +63,5 @@ const buttonFormSim = document.createElement('button'); //gomb létrehozása
 buttonFormSim.textContent = 'hozzáadás'; //gomb szövegének beállítása(hozzáadás)
 formSim.appendChild(buttonFormSim); //buttonFormSim hozzáadása a formSimhez
 
+containerDiv.appendChild(tableDiv); //tablediv hozzáadása a containerdivhez
 containerDiv.appendChild(formDiv); //formdiv hozzáadása a containerdivhez

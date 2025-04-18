@@ -33,7 +33,7 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
         super(cssClass); //Area osztály constructorának meghívása
  
         const table = document.createElement('table'); //table elem létrehozása és eltárolása egy változóba
-        this.div.appendChild(table); //hozzáadás az Area által létre hozoztt divhez
+        this.div.appendChild(table); //table hozzáadása az Area által létre hozoztt divhez
  
         const head = document.createElement('thead'); //thead elem létrehozása és eltárolása egy változóba
         table.appendChild(head); //head hozzáadása a tableelementhez
@@ -50,5 +50,49 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
  
         const tbody = document.createElement('tbody'); //tbody elem létrehozása és eltárolása egy változóba
         table.appendChild(tbody); //tbody hozzáadása a tableelementhez
+    }
+}
+
+class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazottja
+    /**
+     * @param {string} cssClass
+     */
+    constructor(cssClass){ //constructor létrehozása aminek egy bemeneti paramétere van
+        super(cssClass) //Area osztály constructorának meghívása
+ 
+        const form = document.createElement('form'); //form létrehozása
+        this.div.appendChild(form); //form hozzáadása az Area által létre hozoztt divhez
+ 
+        const fieldElementList = [{ //tömb létrehozása, benne 3 objektummal
+            fieldid: 'szerzo', //1. objektum idja
+            fieldLabel: 'szerző' //1. objektum labelje
+        },
+        {
+            fieldid: 'mufaj', //2. objektum idja
+            fieldLabel: 'műfaj' //2. objektum labelje
+        },
+        {
+            fieldid: 'cim', //3. objektum idja
+            fieldLabel: 'cím' //3. objektum labelje
+        }];
+         
+        for(const fieldElement of fieldElementList){ //fieldElementList tömb bejárása
+            const field = makeDiv('field'); //field létrehozása
+            form.appendChild(field); //field hozzáadása a formhoz
+         
+            const label = document.createElement('label'); //label létrehozása
+            label.htmlFor = fieldElement.fieldid; //beállítja hogy melyik inputhoz tartozik
+            label.textContent = fieldElement.fieldLabel; //label szövegének beállítása
+            field.appendChild(label); //label hozzáadása a fieldhez
+        
+            const input = document.createElement('input'); //sima input mező létrehozása
+            input.id = fieldElement.fieldid; //id beállítása
+            field.appendChild(document.createElement('br')); //sortörés, hogy az input új sorba legyen
+            field.appendChild(input); //input hozzáadása a fieldhez
+        }
+
+        const button = document.createElement('button'); //gomb létrehozása
+        button.textContent = 'hozzáadás'; //gomb szövegének beállítása(hozzáadás)
+        form.appendChild(button); //button hozzáadása a formhoz
     }
 }
