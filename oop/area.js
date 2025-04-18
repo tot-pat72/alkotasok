@@ -48,22 +48,32 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
     constructor(cssClass, manager){ //constructor létrehozása aminek két bemeneti paramétere van
         super(cssClass, manager); //Area osztály constructorának meghívása
         const tbody = this.#createTable(); //createTable visszatérési értékének az eltárolása egy változóba
-        this.manager.setAddDataCallback((datas) => { //arrow function létrehozása 
+        this.manager.setAddDataCallback((datas) => { //eseményhez tartozó callback függvény beállítása
+            this.#createDataRow(datas, tbody); //createDataRow függvény egy új sort ad a táblázathoz
+        })
+        this.manager.setRenderTableCallback((dataArray) => { //eseményhez tartozó callback függvény beállítása
+            tbody.innerHTML = ''; //táblázat kiürítése
+            for(const data of dataArray){ //dataArray bejárása
+                this.#createDataRow(data, tbody); //createDataRow függvény egy új sort ad a táblázathoz
+            }
+        })
+    }
+
+    #createDataRow(data, tbody){ //createDataRow függvény egy új sort ad a táblázathoz
         const tableBodyRow = document.createElement('tr'); //új sor létrehozása
         tbody.appendChild(tableBodyRow); //tableBodyRow hozzáadása a tbodyhoz
  
         const szerzoCell = document.createElement('td'); //új cella létrehozása a szerzőnek
-        szerzoCell.textContent = datas.szerzo; //cella tartalma a szerző értéke
+        szerzoCell.textContent = data.szerzo; //cella tartalma a szerző értéke
         tableBodyRow .appendChild(szerzoCell); //szerzoCell hozzáadása a tableBodyRowhoz
     
         const cimCell = document.createElement('td'); //új cella létrehozása a címnek
-        cimCell.textContent = datas.cim; //cella tartalma a cím értéke
+        cimCell.textContent = data.cim; //cella tartalma a cím értéke
         tableBodyRow .appendChild(cimCell); //cimCell hozzáadása a tableBodyRowhoz
 
         const mufajCell = document.createElement('td'); //új cella létrehozása a műfajnak
-        mufajCell.textContent = datas.mufaj; //cella tartalma a műfaj értéke
+        mufajCell.textContent = data.mufaj; //cella tartalma a műfaj értéke
         tableBodyRow .appendChild(mufajCell); //mufajCell hozzáadása a tableBodyRowhoz
-        })
     }
 
     #createTable(){ //táblázat létrehozása
