@@ -1,4 +1,9 @@
 class Filter extends Area{ //Filter osztály létrehozása, ami az Area leszármazottja
+    /**
+     * 
+     * @param {string} cssclass 
+     * @param {Manager} manager 
+     */
     constructor(cssclass, manager){ //constructor létrehozása aminek a cssClass és a manager a bemeneti paramétere
         super(cssclass, manager); //Area osztály constructorának meghívása
 

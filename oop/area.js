@@ -1,9 +1,15 @@
 class Area{ //Area osztály létrehozása
+    /**
+     * @type {HTMLElement}
+     */
     #div //privát változó létrehozása
+    /**
+     * @type {Manager}
+     */
     #manager //privát változó létrehozása
 
     /**
-     * @returns {HTMLDivElement}
+     * @returns {HTMLElement}
      */
     get div(){ //get létrehozása, hogy el lehessen érni a divet
         return this.#div //Visszatérés a divvel
@@ -27,7 +33,11 @@ class Area{ //Area osztály létrehozása
         this.#div.className = className; //className adása a div elemnek
         container.appendChild(this.#div); //div hozzáadása a containerhez
     }
-        
+ 
+    /**
+     * 
+     * @returns {HTMLElement}
+     */
     #getContainerDiv(){
         let containerDiv = document.querySelector(".containeroop"); //containeroop classal rendelkező elem eltárolása egy változóban
         if(!containerDiv){ //Ha nincs ilyen elem
@@ -38,6 +48,11 @@ class Area{ //Area osztály létrehozása
         return containerDiv; //Visszatérés a containerDivvel
     }
 
+    /**
+     * 
+     * @param {string} label 
+     * @returns {HTMLButtonElement}
+     */
     createButton(label){ //függvény a gomb létrehozására
         const button = document.createElement('button'); //gomb létrehozása
         button.textContent = label; //button szövege a label értéke lesz
@@ -58,6 +73,11 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
         this.manager.setRenderTableCallback(this.#renderTableCallback(tbody)) //callback függvény, a táblázat újrarendereléséhez
     }
 
+    /**
+     * 
+     * @param {HTMLElement} tbody 
+     * @returns {RenderTableCallback}
+     */
     #renderTableCallback(tbody){ //táblázat újrarenderelése 
         return (array) => { //callback függvény visszaadása    
             tbody.innerHTML = ''; //táblázat kiürítése
@@ -67,12 +87,22 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
         }
     }
 
+    /**
+     * 
+     * @param {HTMLElement} tbody 
+     * @returns {AddDataCallback}
+     */
     #addDataCallback(tbody){ //új sor hozzáadása a táblázathoz
         return (data) => { //callback függvény visszaadása
             this.#createDataRow(data, tbody); //új sor hozzáadása
         }
     } 
 
+    /**
+     * 
+     * @param {Data} data 
+     * @param {HTMLTableSectionElement} tbody 
+     */
     #createDataRow(data, tbody){ //createDataRow függvény egy új sort ad a táblázathoz
         const tableBodyRow = document.createElement('tr'); //új sor létrehozása
         this.#createCell(tableBodyRow, data.szerzo); //szerzo cella adatainak hozzáadása
@@ -81,12 +111,22 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
         tbody.appendChild(tableBodyRow); //tableBodyRow hozzáadása a tbodyhoz
     }
 
+    /**
+     * 
+     * @param {HTMLTableRowElement} row 
+     * @param {string} textContent 
+     * @param {string} type 
+     */
     #createCell(row, textContent, type='td'){ //cella létrehozása és hozzáadása a sorhoz
         const cell = document.createElement(type); //cella létrehozása
         cell.textContent = textContent; //cella tartalmának beállítása
         row.appendChild(cell); //cell hozzáadása a rowhoz
     }
 
+    /**
+     * 
+     * @returns {HTMLElement}
+     */
     #createTable(){ //táblázat létrehozása
         const table = document.createElement('table'); //table elem létrehozása és eltárolása egy változóba
         this.div.appendChild(table); //table hozzáadása az Area által létre hozoztt divhez
@@ -109,9 +149,15 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
 }
 
 class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazottja
+    /**
+     * @type {FormField[]}
+     */
     #formField //privát változó létrehozása
     /**
-     * @param {string} cssClass
+     * 
+     * @param {string} cssClass 
+     * @param {{fieldid: string, fieldLabel: string}[]} fieldConfig 
+     * @param {Manager} manager 
      */
     constructor(cssClass, fieldConfig, manager){ //constructor létrehozása aminek három bemeneti paramétere van
         super(cssClass, manager) //Area osztály constructorának meghívása
@@ -121,6 +167,11 @@ class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazot
         form.addEventListener('submit', this.#formsubmitEventListener())//eseménykezelőt hozzáadása a form submit eseményéhez
     }
 
+    /**
+     * 
+     * @param {string} fieldConfigurationList 
+     * @returns {HTMLElement}
+     */
     #createForm(fieldConfigurationList){ //privát metódus a form létrehozásához
         const form = document.createElement('form'); //form létrehozása
         this.div.appendChild(form); //form hozzáadása az Area által létre hozoztt divhez
@@ -136,6 +187,10 @@ class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazot
         return form; //visszatérés a formmal
     }
 
+    /**
+     * 
+     * @returns {EventListener}
+     */
     #formsubmitEventListener(){ //event listener létrehozása és visszaadása
         return (e)=> { //esemenykezelő a form elküldéséhez
             e.preventDefault(); //az oldal újra frissülésének megakadályozása
@@ -147,6 +202,10 @@ class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazot
         }
     }
 
+    /**
+     * 
+     * @returns {boolean}
+     */
     #validateAllFields(){ //kitöltött mezők ellenőrzése
         let valid = true; //valid változó létrehozása, aminek az kezdő értéke igaz
         for(const formField of this.#formField){ //formField bejárása
@@ -159,6 +218,10 @@ class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazot
         return valid; //visszatérés a validdal
     }
 
+    /**
+     * 
+     * @returns {{szerzo: string, mufaj: string, cim: string}}
+     */
     #getValueObject(){ //mezők értékeinek összegyűjtése és visszaadása egy objektumban
         const valueObject = {}; //üres objektum létrehozása, a mezők értékeinek az eltárolása
         for(const formField of this.#formField){ //formField bejárása
@@ -169,6 +232,11 @@ class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazot
 }
 
 class UploadDownload extends Area { //UploadDownload osztály létrehozása, ami az Area leszármazottja
+    /**
+     * 
+     * @param {string} cssClass 
+     * @param {Manager} manager 
+     */
     constructor(cssClass, manager) { //constructor létrehozása aminek két bemeneti paramétere van
         super(cssClass, manager); //Area osztály constructorának meghívása
         const fileInput = document.createElement('input'); //input létrehozása
@@ -182,6 +250,10 @@ class UploadDownload extends Area { //UploadDownload osztály létrehozása, ami
         exportButton.addEventListener('click', this.#exportButtonEventListener()) //eseménykezelő hozzáadása az exportButtonhoz
     }
 
+    /**
+     * 
+     * @returns {EventListener}
+     */
     #exportButtonEventListener(){ //eseménykezelő a letöltés gombra
         return () => { //visszatérés
             const link = document.createElement('a'); //link elem létrehozása
@@ -194,6 +266,10 @@ class UploadDownload extends Area { //UploadDownload osztály létrehozása, ami
         }
     }
 
+    /**
+     * 
+     * @returns {EventListener}
+     */
     #importInputEventListener(){ //eseménykezelő az importálásra
         return (e) => { //esemenykezelő a fajl feltöltéséhez
             const file = e.target.files[0]; //első fájl kiválasztása
@@ -214,23 +290,49 @@ class UploadDownload extends Area { //UploadDownload osztály létrehozása, ami
 }
 
 class FormField { //FormField osztály létrehozása
+    /**
+     * @param {string} id
+     */
     #id; //privát változó létrehozása
+    /**
+     * @param {HTMLInputElement} inputElement
+     */
     #inputElement; //privát változó létrehozása
+    /**
+     * @param {HTMLLabelElement} labelElement
+     */
     #labelElement; //privát változó létrehozása
+    /**
+     * @param {HTMLSpanElement} errorElement
+     */
     #errorElement; //privát változó létrehozása
  
+    /**
+     * @returns {string}
+     */
     get id() { //get létrehozása, hogy el lehessen érni az idét
         return this.#id; //Visszatérés az idvel
     }
  
+    /**
+     * @returns {string}
+     */
     get value() { //get létrehozása, hogy el lehessen érni a valuet
         return this.#inputElement.value; //Visszatérés a valueval
     }
  
+    /**
+     * @param {string}
+     */
     set error(value) { //set létrehozása, hogy be lehessen állítani a error valuet
         this.#errorElement.textContent = value; //errorElement szövegének beállítása a kapott értékre
     }
 
+    /**
+     * 
+     * @param {string} id 
+     * @param {string} labelContent 
+     */
     constructor(id, labelContent) { //constructor létrehozása aminek két bemeneti paramétere van
         this.#id = id; //id értéke a bemeneti paraméter
         this.#labelElement = document.createElement('label'); //label elem létrehozása
@@ -242,6 +344,10 @@ class FormField { //FormField osztály létrehozása
         this.#errorElement.className = 'error'; //className adása, ami az error lesz
     }
  
+    /**
+     * 
+     * @returns {HTMLDivElement}
+     */
     getDiv() { //metódus, ami visszaadja a teljes mezőt egy div-ben
         const div = makeDiv('field'); //div elem létrehozása, amibe az elemek kerülnek
         const br1 = document.createElement('br'); //első sortörés
