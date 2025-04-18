@@ -30,4 +30,39 @@ tableelement.appendChild(tbody); //tbody hozzáadása a tableelementhez
 containerDiv.appendChild(tableDiv); //tablediv hozzáadása a containerdivhez
  
 const formDiv = makeDiv("form"); //formdiv létrehozása, aminek a form lesz a classa
+const formSim = document.createElement('form'); //form létrehozása
+formDiv.appendChild(formSim); //formSim hozzáadása a formDivhez
+ 
+const fieldElementList = [{ //tömb létrehozása, benne 3 objektummal
+    fieldid: 'szerzo', //1. objektum idja
+    fieldLabel: 'szerző' //1. objektum labelje
+},
+{
+    fieldid: 'mufaj', //2. objektum idja
+    fieldLabel: 'műfaj' //2. objektum labelje
+},
+{
+    fieldid: 'cim', //3. objektum idja
+    fieldLabel: 'cím' //3. objektum labelje
+}];
+ 
+for(const fieldElement of fieldElementList){ //fieldElementList tömb bejárása
+    const field = makeDiv('field'); //field létrehozása
+    formSim.appendChild(field); //field hozzáadása a formSimhez
+ 
+    const label = document.createElement('label'); //label létrehozása
+    label.htmlFor = fieldElement.fieldid; //beállítja hogy melyik inputhoz tartozik
+    label.textContent = fieldElement.fieldLabel; //label szövegének beállítása
+    field.appendChild(label); //label hozzáadása a fieldhez
+
+    const input = document.createElement('input'); //sima input mező létrehozása
+    input.id = fieldElement.fieldid; //id beállítása
+    field.appendChild(document.createElement('br')); //sortörés, hogy az input új sorba legyen
+    field.appendChild(input); //input hozzáadása a fieldhez
+}
+
+const buttonFormSim = document.createElement('button'); //gomb létrehozása
+buttonFormSim.textContent = 'hozzáadás'; //gomb szövegének beállítása(hozzáadás)
+formSim.appendChild(buttonFormSim); //buttonFormSim hozzáadása a formSimhez
+
 containerDiv.appendChild(formDiv); //formdiv hozzáadása a containerdivhez
