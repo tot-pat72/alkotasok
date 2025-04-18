@@ -37,6 +37,12 @@ class Area{ //Area osztály létrehozása
         }
         return containerDiv; //Visszatérés a containerDivvel
     }
+
+    createButton(label){ //függvény a gomb létrehozására
+        const button = document.createElement('button'); //gomb létrehozása
+        button.textContent = label; //button szövege a label értéke lesz
+        return button; //visszatérés a buttonnal
+    }
 }
 
 class Table extends Area{ //Table osztály létrehozása, ami az Area leszármazottja
@@ -48,32 +54,37 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
     constructor(cssClass, manager){ //constructor létrehozása aminek két bemeneti paramétere van
         super(cssClass, manager); //Area osztály constructorának meghívása
         const tbody = this.#createTable(); //createTable visszatérési értékének az eltárolása egy változóba
-        this.manager.setAddDataCallback((datas) => { //eseményhez tartozó callback függvény beállítása
-            this.#createDataRow(datas, tbody); //createDataRow függvény egy új sort ad a táblázathoz
-        })
-        this.manager.setRenderTableCallback((dataArray) => { //eseményhez tartozó callback függvény beállítása
-            tbody.innerHTML = ''; //táblázat kiürítése
-            for(const data of dataArray){ //dataArray bejárása
-                this.#createDataRow(data, tbody); //createDataRow függvény egy új sort ad a táblázathoz
-            }
-        })
+        this.manager.setAddDataCallback(this.#addDataCallback(tbody)) //callback függvény, ami új adat hozzáadásakor hívódik meg
+        this.manager.setRenderTableCallback(this.#renderTableCallback(tbody)) //callback függvény, a táblázat újrarendereléséhez
     }
+
+    #renderTableCallback(tbody){ //táblázat újrarenderelése 
+        return (array) => { //callback függvény visszaadása    
+            tbody.innerHTML = ''; //táblázat kiürítése
+            for(const data of array){ //array bejárása
+                this.#createDataRow(data, tbody); //új sor létrehozása
+            } 
+        }
+    }
+
+    #addDataCallback(tbody){ //új sor hozzáadása a táblázathoz
+        return (data) => { //callback függvény visszaadása
+            this.#createDataRow(data, tbody); //új sor hozzáadása
+        }
+    } 
 
     #createDataRow(data, tbody){ //createDataRow függvény egy új sort ad a táblázathoz
         const tableBodyRow = document.createElement('tr'); //új sor létrehozása
+        this.#createCell(tableBodyRow, data.szerzo); //szerzo cella adatainak hozzáadása
+        this.#createCell(tableBodyRow, data.mufaj); //mufaj cella adatainak hozzáadása
+        this.#createCell(tableBodyRow, data.cim); //cim cella adatainak hozzáadása
         tbody.appendChild(tableBodyRow); //tableBodyRow hozzáadása a tbodyhoz
- 
-        const szerzoCell = document.createElement('td'); //új cella létrehozása a szerzőnek
-        szerzoCell.textContent = data.szerzo; //cella tartalma a szerző értéke
-        tableBodyRow .appendChild(szerzoCell); //szerzoCell hozzáadása a tableBodyRowhoz
-    
-        const cimCell = document.createElement('td'); //új cella létrehozása a címnek
-        cimCell.textContent = data.cim; //cella tartalma a cím értéke
-        tableBodyRow .appendChild(cimCell); //cimCell hozzáadása a tableBodyRowhoz
+    }
 
-        const mufajCell = document.createElement('td'); //új cella létrehozása a műfajnak
-        mufajCell.textContent = data.mufaj; //cella tartalma a műfaj értéke
-        tableBodyRow .appendChild(mufajCell); //mufajCell hozzáadása a tableBodyRowhoz
+    #createCell(row, textContent, type='td'){ //cella létrehozása és hozzáadása a sorhoz
+        const cell = document.createElement(type); //cella létrehozása
+        cell.textContent = textContent; //cella tartalmának beállítása
+        row.appendChild(cell); //cell hozzáadása a rowhoz
     }
 
     #createTable(){ //táblázat létrehozása
@@ -88,9 +99,7 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
 
         const headcell = ['szerző', 'műfaj', 'cím']; //tömb a fejléc tartalmával
         for(const cell of headcell){ //headcell tömb bejárása
-            const thcell = document.createElement('th'); //th elem létrehozása és eltárolása egy változóba
-            thcell.innerText = cell; //thcell tartalma a cellában lévő elem lesz
-            headrow.appendChild(thcell); //thcell hozzáadása a headrowhoz
+            this.#createCell(headrow, cell, 'th') //cella létrehozása és hozzáadása a fejléc sorához
         }
  
         const tbody = document.createElement('tbody'); //tbody elem létrehozása és eltárolása egy változóba
@@ -107,37 +116,55 @@ class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazot
     constructor(cssClass, fieldConfig, manager){ //constructor létrehozása aminek három bemeneti paramétere van
         super(cssClass, manager) //Area osztály constructorának meghívása
         this.#formField = []; //üres tömb létrehozása
- 
+
+        const form = this.#createForm(fieldConfig); //form létrehozása
+        form.addEventListener('submit', this.#formsubmitEventListener())//eseménykezelőt hozzáadása a form submit eseményéhez
+    }
+
+    #createForm(fieldConfigurationList){ //privát metódus a form létrehozásához
         const form = document.createElement('form'); //form létrehozása
         this.div.appendChild(form); //form hozzáadása az Area által létre hozoztt divhez
          
-        for(const fieldElement of fieldConfig){ //fieldConfig tömb bejárása
+        for(const fieldElement of fieldConfigurationList){ //fieldConfigurationList tömb bejárása
             const formField = new FormField(fieldElement.fieldid, fieldElement.fieldLabel); //új FormField objektum létrehozása
             this.#formField.push(formField); //formfield eltárolása a tömbben
             form.appendChild(formField.getDiv()); //formFieldhez tartozó elemek hozzáadása a formhoz
         }
 
-        const button = document.createElement('button'); //gomb létrehozása
-        button.textContent = 'hozzáadás'; //gomb szövegének beállítása(hozzáadás)
+        const button = this.createButton('hozzáadás'); //gomb létrehozása
         form.appendChild(button); //button hozzáadása a formhoz
+        return form; //visszatérés a formmal
+    }
 
-        form.addEventListener('submit', (e)=> { //form elküldésével fut le
+    #formsubmitEventListener(){ //event listener létrehozása és visszaadása
+        return (e)=> { //esemenykezelő a form elküldéséhez
             e.preventDefault(); //az oldal újra frissülésének megakadályozása
-            const valueObject = {}; //üres objektum létrehozása, a mezők értékeinek az eltárolása
-            let valid = true; //valid változó létrehozása, aminek az kezdő értéke igaz
-            for(const inputField of this.#formField){ //formField bejárása
-                inputField.error = ''; //hibaüzenet mező kiürítése
-                if(inputField.value === ''){ //ha az inputField üres
-                    inputField.error = 'Kötelező megadni!'; //hibaüzenetet kiírása
-                    valid = false; //valid értéke false lesz
-                }
-                valueObject[inputField.id] = inputField.value; //A mező idje lesz a kulcs az objektumban, az aktuális input mező értékének a hozzárendelése.
-            }
-            if(valid){ //ha a valid értéke true
+            if(this.#validateAllFields()){ //ha a valid értéke true
+                const valueObject = this.#getValueObject(); //mezők értékeinek összegyűjtése egy objektumba
                 const data = new Data(valueObject.szerzo, valueObject.mufaj, valueObject.cim); //új Data objektum létrehozása a felhasználó által megadott adatokkal
                 this.manager.addData(data); //új objektum hozzáadása a managerhez
             }
-        })
+        }
+    }
+
+    #validateAllFields(){ //kitöltött mezők ellenőrzése
+        let valid = true; //valid változó létrehozása, aminek az kezdő értéke igaz
+        for(const formField of this.#formField){ //formField bejárása
+            formField.error = ''; //hibaüzenet mező kiürítése
+            if(formField.value === ''){ //ha a formField üres
+                formField.error = 'Kötelező megadni!'; //hibaüzenetet kiírása
+                valid = false; //valid értéke false lesz
+            }
+        }
+        return valid; //visszatérés a validdal
+    }
+
+    #getValueObject(){ //mezők értékeinek összegyűjtése és visszaadása egy objektumban
+        const valueObject = {}; //üres objektum létrehozása, a mezők értékeinek az eltárolása
+        for(const formField of this.#formField){ //formField bejárása
+            valueObject[formField.id] = formField.value; //A mező idje lesz a kulcs az objektumban, az aktuális form mező értékének a hozzárendelése
+        }
+        return valueObject; //visszatérés a valueObjectel
     }
 }
 
@@ -148,7 +175,27 @@ class UploadDownload extends Area { //UploadDownload osztály létrehozása, ami
         fileInput.id = 'fileinput'; //fileInput idje fileinput lesz
         fileInput.type = 'file'; //fileInput típusa file lesz
         this.div.appendChild(fileInput); //fileInput hozzáadása az Area által létre hozoztt divhez
-        fileInput.addEventListener('change', (e) => { //eseménykezelő létrehozása a fileInput elemhez
+        
+        fileInput.addEventListener('change', this.#importInputEventListener()) //eseménykezelő hozzáadása a fileInputhoz
+        const exportButton = this.createButton('Letöltés') //Letöltés gomb létrehozása
+        this.div.appendChild(exportButton); //exportButton hozzáadása az Area által létre hozoztt divhez
+        exportButton.addEventListener('click', this.#exportButtonEventListener()) //eseménykezelő hozzáadása az exportButtonhoz
+    }
+
+    #exportButtonEventListener(){ //eseménykezelő a letöltés gombra
+        return () => { //visszatérés
+            const link = document.createElement('a'); //link elem létrehozása
+            const content = this.manager.generateExportString(); //manager objektum generateExportString() metódusának meghívása
+            const file = new Blob([content]) //Blob létrehozása
+            link.href = URL.createObjectURL(file);// A fájlhoz tartozó ideiglenes URL létrehozása, hogy letölthető legyen a fájl
+            link.download = 'newdata.csv' //letöltött fájl nevének megadása
+            link.click(); //linkre kattintásnál elindul a letöltés
+            URL.revokeObjectURL(link.href); //ideiglenes URL visszavonása
+        }
+    }
+
+    #importInputEventListener(){ //eseménykezelő az importálásra
+        return (e) => { //esemenykezelő a fajl feltöltéséhez
             const file = e.target.files[0]; //első fájl kiválasztása
             const fileReader = new FileReader(); //FileReader osztály létrehozása
             fileReader.onload = () => { //fájl betöltődése
@@ -162,19 +209,7 @@ class UploadDownload extends Area { //UploadDownload osztály létrehozása, ami
                 }
             };
             fileReader.readAsText(file); //fájl beolvasása szövegként
-        });
-        const exportButton = document.createElement('button'); //új gomb létrehozása
-        exportButton.textContent = 'Letöltés'; //gomb szövege a Letöltés lesz
-        this.div.appendChild(exportButton); //exportButton hozzáadása az Area által létre hozoztt divhez
-        exportButton.addEventListener('click', () => { //eseménykezelő létrehozása az exportButton elemhez
-        const link = document.createElement('a'); //link elem létrehozása
-        const content = this.manager.generateExportString(); //manager objektum generateExportString() metódusának meghívása
-        const file = new Blob([content]) //Blob létrehozása
-        link.href = URL.createObjectURL(file);// A fájlhoz tartozó ideiglenes URL létrehozása, hogy letölthető legyen a fájl
-        link.download = 'newdata.csv' //letöltött fájl nevének megadása
-        link.click(); //linkre kattintásnál elindul a letöltés
-        URL.revokeObjectURL(link.href); //ideiglenes URL visszavonása
-        });
+        }
     }
 }
 
