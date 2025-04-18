@@ -90,28 +90,21 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
 }
 
 class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazottja
+    #formField //privát változó létrehozása
     /**
      * @param {string} cssClass
      */
     constructor(cssClass, fieldConfig, manager){ //constructor létrehozása aminek három bemeneti paramétere van
         super(cssClass, manager) //Area osztály constructorának meghívása
+        this.#formField = []; //üres tömb létrehozása
  
         const form = document.createElement('form'); //form létrehozása
         this.div.appendChild(form); //form hozzáadása az Area által létre hozoztt divhez
          
         for(const fieldElement of fieldConfig){ //fieldConfig tömb bejárása
-            const field = makeDiv('field'); //field létrehozása
-            form.appendChild(field); //field hozzáadása a formhoz
-         
-            const label = document.createElement('label'); //label létrehozása
-            label.htmlFor = fieldElement.fieldid; //beállítja hogy melyik inputhoz tartozik
-            label.textContent = fieldElement.fieldLabel; //label szövegének beállítása
-            field.appendChild(label); //label hozzáadása a fieldhez
-        
-            const input = document.createElement('input'); //sima input mező létrehozása
-            input.id = fieldElement.fieldid; //id beállítása
-            field.appendChild(document.createElement('br')); //sortörés, hogy az input új sorba legyen
-            field.appendChild(input); //input hozzáadása a fieldhez
+            const formField = new FormField(fieldElement.fieldid, fieldElement.fieldLabel); //új FormField objektum létrehozása
+            this.#formField.push(formField); //formfield eltárolása a tömbben
+            form.appendChild(formField.getDiv()); //formFieldhez tartozó elemek hozzáadása a formhoz
         }
 
         const button = document.createElement('button'); //gomb létrehozása
@@ -128,5 +121,46 @@ class Form extends Area{ //Form osztály létrehozása, ami az Area leszármazot
             const data = new Data(valueObject.szerzo, valueObject.mufaj, valueObject.cim) //új Data objektum létrehozása a felhasználó által megadott adatokkal
             this.manager.addData(data) //új objektum hozzáadása a managerhez
         })
+    }
+}
+
+class FormField { //FormField osztály létrehozása
+    #id; //privát változó létrehozása
+    #inputElement; //privát változó létrehozása
+    #labelElement; //privát változó létrehozása
+    #errorElement; //privát változó létrehozása
+ 
+    get id() { //get létrehozása, hogy el lehessen érni az idét
+        return this.#id; //Visszatérés az idvel
+    }
+ 
+    get value() { //get létrehozása, hogy el lehessen érni a valuet
+        return this.#inputElement.value; //Visszatérés a valueval
+    }
+ 
+    set error(value) { //set létrehozása, hogy be lehessen állítani a error valuet
+        this.#errorElement.textContent = value; //errorElement szövegének beállítása a kapott értékre
+    }
+
+    constructor(id, labelContent) { //constructor létrehozása aminek két bemeneti paramétere van
+        this.#id = id; //id értéke a bemeneti paraméter
+        this.#labelElement = document.createElement('label'); //label elem létrehozása
+        this.#labelElement.htmlFor = id; //label beállítása, hogy melyik inputhoz tartozik
+        this.#labelElement.textContent = labelContent; //label szövegének beállítása
+        this.#inputElement = document.createElement('input'); //input mező létrehozása
+        this.#inputElement.id = id; //id beállítása
+        this.#errorElement = document.createElement('span'); //span elem létrehozása
+        this.#errorElement.className = 'error'; //className adása, ami az error lesz
+    }
+ 
+    getDiv() { //metódus, ami visszaadja a teljes mezőt egy div-ben
+        const div = makeDiv('field'); //div elem létrehozása, amibe az elemek kerülnek
+        const br1 = document.createElement('br'); //első sortörés
+        const br2 = document.createElement('br'); //második sortörés
+        const elements = [this.#labelElement, br1, this.#inputElement, br2, this.#errorElement]; //tömbbe, az összes elem belerakása
+        for (const element of elements) { //elements tömb bejárása
+            div.appendChild(element); //element hozzáadása a divhez
+        }
+        return div; //Visszatérés a divvel
     }
 }
