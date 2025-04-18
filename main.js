@@ -109,3 +109,41 @@ formSim.addEventListener('submit', (e)=> { //form elküldésével fut le
 
 containerDiv.appendChild(tableDiv); //tablediv hozzáadása a containerdivhez
 containerDiv.appendChild(formDiv); //formdiv hozzáadása a containerdivhez
+
+const fileInput = document.createElement('input'); //input létrehozása
+containerDiv.appendChild(fileInput); //fileInput hozzáadása a containerDivhez
+fileInput.id = 'fileinput'; //fileInput idje fileinput lesz
+fileInput.type = 'file'; //fileInput típusa file lesz
+fileInput.addEventListener('change', (e) => { //eseménykezelő létrehozása a fileInput elemhez
+    const file = e.target.files[0]; //első fájl kiválasztása
+    const fileReader = new FileReader(); //FileReader osztály létrehozása
+    fileReader.onload = () => { //fájl betöltődése
+        const fileLines = fileReader.result.split('\n'); //tömb tartalmának a sorokra bontása
+        const removedLines = fileLines.slice(1); //fejléc eltávolítása a tömbből
+        for (const line of removedLines) { //removedLines bejárása
+            const trimmedLine  = line.trim(); //felesleges szóközöket kiszedése
+            const fields = trimmedLine .split(';'); //sorok szétszedése a pontosvesszők mentén
+            const adat = { //objektum létrehozása
+                szerzo: fields[0], //objektum 1.eleme
+                mufaj: fields[1], //objektum 2.eleme
+                cim: fields[2] //objektum 3.eleme
+            };
+            array.push(adat); //adatok hozzáadása a tömbhöz
+            const tableBodyRow = document.createElement('tr'); //új sor létrehozása
+            tbody.appendChild(tableBodyRow); //tableBodyRow hozzáadása a tbodyhoz
+ 
+            const szerzoCell = document.createElement('td'); //új cella létrehozása a szerzőnek
+            szerzoCell.textContent = adat.szerzo; //cella tartalma a szerző értéke
+            tableBodyRow .appendChild(szerzoCell); //szerzoCell hozzáadása a tableBodyRowhoz
+        
+            const cimCell = document.createElement('td'); //új cella létrehozása a címnek
+            cimCell.textContent = adat.cim; //cella tartalma a cím értéke
+            tableBodyRow .appendChild(cimCell); //cimCell hozzáadása a tableBodyRowhoz
+
+            const mufajCell = document.createElement('td'); //új cella létrehozása a műfajnak
+            mufajCell.textContent = adat.mufaj; //cella tartalma a műfaj értéke
+            tableBodyRow .appendChild(mufajCell); //mufajCell hozzáadása a tableBodyRowhoz
+        }
+    };
+    fileReader.readAsText(file); //fájl beolvasása szövegként
+});
