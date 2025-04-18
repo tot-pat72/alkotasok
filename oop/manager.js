@@ -37,4 +37,14 @@ class Manager { //Manager osztály létrehozása
         }
         return result.join('\n'); //tömb átalakítása szöveggé(string), elválasztás soronként
     }
+
+    counter(property, value){ //counter függvény létrehozása
+        let counter = 0; //számláló létrehozása
+        for(const alkotas of this.#array){ //privát array bejárása
+            if(alkotas[property].toLowerCase().includes(value.toLowerCase())){ //ha az adott mező tartalmazza a keresett értéket
+                counter++; //számláló növelése
+            }
+        }
+        return counter; //visszatérés counterrel
+    }
 }

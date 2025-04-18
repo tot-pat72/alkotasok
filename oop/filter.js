@@ -37,31 +37,14 @@ class Filter extends Area{ //Filter osztály létrehozása, ami az Area leszárm
  
         const button = this.createButton('Szűrés') //gomb létrehozása a createButton segítségével
         formForFilter.appendChild(button); //button hozzáadása a formForFilterhez
+
+        const div = document.createElement('div'); //div létrehozása
+        formForFilter.appendChild(div); //div hozzáadása a formForFilterhez
  
         formForFilter.addEventListener('submit', (e) => { //eseménykezelő létrehozása a formForFilter submit eseményére
             e.preventDefault(); //az oldal újra frissülésének megakadályozása
-            const filterInput = e.target.querySelector('#filterInput'); //filterinput classal rendelkezö elem kiválasztása
-            const select = e.target.querySelector('select'); //select classal rendelkezö elem kiválasztása
-            this.manager.filter((element) => { //callback függvény, amely minden elemre lefut
-                if(select.value == 'szerzo'){ //ha a kiválasztott mező a szerző
-                    if(filterInput.value === element.szerzo){ //ha a filterInput értéke egyenlő a szerző értékével
-                        return true; //visszatérés igazzal
-                    }
-                }
-                else if(select.value == 'mufaj'){ //ha a kiválasztott mező a műfaj
-                    if(filterInput.value === element.mufaj){ //ha a filterInput értéke egyenlő a műfaj értékével
-                        return true; //visszatérés igazzal
-                    }
-                }
-                else if(select.value == 'cim'){ //ha a kiválasztott mező a cím
-                    if(filterInput.value === element.cim){ //ha a filterInput értéke egyenlő a cím értékével
-                        return true; //visszatérés igazzal
-                    }
-                }
-                else{
-                    return true; //visszatérés igazzal
-                }
-            })    
+            const counter = manager.counter(select.value, filterInputField.value); //manager osztály counter metódusának meghívása
+            div.innerHTML = `A számlálás eredménye: ${counter}`; //div tartalmának megadása, ami a counter értéke lesz
         })
     }
 }
