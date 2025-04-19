@@ -9,21 +9,6 @@ const makeDiv = (className) => { //Arrow function létrehozása aminek a classNa
     return div; //Visszatérés a divvel
 }
 /**
- * 
- * @param {Array<{szerzo: string, mufaj: string, cim: string}>} dataArray
- * @param {{szerzo: string, mufaj: string, cim: string}: boolean} callback
- * @returns {Array<{szerzo: string, mufaj: string, cim: string}>}
- */
-const filter = (dataArray, callback) => { //Arrow function létrehozása aminek a dataArray és a callback a bemeneti paramétere
-    const result = []; //üres tömb létrehozása, a szürt elemeknek
-    for(const element of dataArray){ //dataArray bejárása
-        if(callback(element)){ //ha a callback függvény truet ad vissza
-            result.push(element); //result hozzáadása a tömbhöz
-        }
-    }
-    return result; //visszatérés resulttal
-}
-/**
  * @param {HTMLElement} containerDiv
  * @param {function(HTMLElement): void} callback
  */

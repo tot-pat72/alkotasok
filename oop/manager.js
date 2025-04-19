@@ -1,10 +1,10 @@
 /**
  * @callback addDataCallback
- * @param {HTMLElement} tbody
+ * @param {Data} 
  * @returns {void}
  * 
  * @callback renderTableCallback
- * @param {HTMLElement} tbody
+ * @param {Data[]} 
  * @returns {void}
  */
 class Manager { //Manager osztály létrehozása
@@ -27,7 +27,7 @@ class Manager { //Manager osztály létrehozása
 
     /**
      * 
-     * @param {{function(Alkotas): void}} callback - callback függvény, amely adatokat fogad.
+     * @param {{function(Data): void}} callback - callback függvény, amely adatokat fogad.
      */
     setAddDataCallback(callback) { //callback függvény beállítása
         this.#addDataCallback = callback; //callback függvény eltárolása egy privát változóban
@@ -35,7 +35,7 @@ class Manager { //Manager osztály létrehozása
  
     /**
      * 
-     * @param {{function(Alkotas): void}} callback - callback függvény, amely egy adat tömböt vár, és rendereli azt a táblázatban.
+     * @param {{function(Data[]): void}} callback - callback függvény, amely egy adat tömböt vár, és rendereli azt a táblázatban.
      */
     setRenderTableCallback(callback){ //callback függvény beállítása
         this.#renderTableCallback = callback; //callback függvény eltárolása egy privát változóban
@@ -52,7 +52,7 @@ class Manager { //Manager osztály létrehozása
 
     /**
      * 
-     * @param {{function(Alkotas): void}} callback -callback függvény, amely egy adatot vár paraméterként, és igaz vagy hamis értéket ad vissza.
+     * @param {{function(Data): void}} callback -callback függvény, amely egy adatot vár paraméterként, és igaz vagy hamis értéket ad vissza.
      */
     filter(callback){ //callback függvény beállítása
         const result = []; //üres tömb létrehozása, a szürt elemeknek

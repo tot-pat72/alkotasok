@@ -76,7 +76,7 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
     /**
      * 
      * @param {HTMLElement} tbody 
-     * @returns {RenderTableCallback}
+     * @returns {{function(Data[]): void}}
      */
     #renderTableCallback(tbody){ //táblázat újrarenderelése 
         return (array) => { //callback függvény visszaadása    
@@ -90,7 +90,7 @@ class Table extends Area{ //Table osztály létrehozása, ami az Area leszármaz
     /**
      * 
      * @param {HTMLElement} tbody 
-     * @returns {AddDataCallback}
+     * @returns {{function(Data): void}}
      */
     #addDataCallback(tbody){ //új sor hozzáadása a táblázathoz
         return (data) => { //callback függvény visszaadása
