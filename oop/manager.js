@@ -52,20 +52,6 @@ class Manager { //Manager osztály létrehozása
 
     /**
      * 
-     * @param {{function(Data): void}} callback -callback függvény, amely egy adatot vár paraméterként, és igaz vagy hamis értéket ad vissza.
-     */
-    filter(callback){ //callback függvény beállítása
-        const result = []; //üres tömb létrehozása, a szürt elemeknek
-        for(const data of this.#array){ //array bejárása
-            if(callback(data)){ //ha a callback függvény truet ad vissza
-                result.push(data); //result hozzáadása a tömbhöz
-            }
-        }
-        this.#renderTableCallback(result); //renderTableCallback meghívása a szürt adatokkal
-    }
-
-    /**
-     * 
      * @returns {string}
      */
     generateExportString(){ //a fájl tartalmának legenerálása szövegként
@@ -77,15 +63,17 @@ class Manager { //Manager osztály létrehozása
     }
 
     /**
-    * 
-    * @param {string} property 
-    * @param {string} value 
-    * @returns {Number}
-    */
-    counter(property, value){ //counter függvény létrehozása
+     * 
+     * @param {function(string, string): boolean} callback
+     * @param {string} property
+     * @param {string} value
+     * @returns {Number}
+     * 
+     */
+    counter(callback, property, value){ //counter függvény létrehozása
         let counter = 0; //számláló létrehozása
-        for(const alkotas of this.#array){ //privát array bejárása
-            if(alkotas[property].toLowerCase().includes(value.toLowerCase())){ //ha az adott mező tartalmazza a keresett értéket
+        for(const item of this.#array){ //privát array bejárása
+            if(callback(item[property], value)){ //ha a callback függvény igaz értéket ad vissza
                 counter++; //számláló növelése
             }
         }

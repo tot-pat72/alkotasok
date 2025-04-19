@@ -48,7 +48,9 @@ class Filter extends Area{ //Filter osztály létrehozása, ami az Area leszárm
  
         formForFilter.addEventListener('submit', (e) => { //eseménykezelő létrehozása a formForFilter submit eseményére
             e.preventDefault(); //az oldal újra frissülésének megakadályozása
-            const counter = manager.counter(select.value, filterInputField.value); //manager osztály counter metódusának meghívása
+            const counter = manager.counter((param_1, param_2) => { //manager osztály counter metódusának meghívása
+                return param_1.toLowerCase().includes(param_2.toLowerCase()); //a property értéke tartalmazza a megadott szöveget
+                }, select.value, filterInputField.value); //az aktuálisan kiválasztott érték és az input mezőbe beírt szöveg értéke
             div.innerHTML = `A számlálás eredménye: ${counter}`; //div tartalmának megadása, ami a counter értéke lesz
         })
     }
